@@ -256,7 +256,7 @@ class Processor():
         
         self.m_params = sum(p.numel() for p in self.model.parameters())
         self.trainable_m_params= sum(p.numel() for p in self.model.parameters() if p.requires_grad)
-
+        
 
 
         # self.loss = LabelSmoothingCrossEntropy().cuda(output_device)
