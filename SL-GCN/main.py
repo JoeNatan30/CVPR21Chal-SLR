@@ -140,7 +140,7 @@ def get_parser():
     parser.add_argument('--cleaned', type=bool, default=False, help='use nesterov or not')
     parser.add_argument('--user', type=str, default="cristian", help='user of the experiment')
     parser.add_argument('--model_version', type=int, default=1, help='model version of architecture')
-    parser.add_argument("--patience", type=int, default=300, help="patience for early stopping")
+    parser.add_argument("--patience", type=int, default=800, help="patience for early stopping")
 
     return parser
 def count_parameters(model):
