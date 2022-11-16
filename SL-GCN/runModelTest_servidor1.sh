@@ -12,6 +12,7 @@ declare -a lrs=(0.05 0.005 0.0005 0.05 0.005 0.0005)
 declare -a epochs=(6000 6000 6000 6000 6000 6000)
 declare -a model_version=(3 3 3 4 4 4)
 
+# run prediction
 for i in 0 # seed
 do
   for j in 0 2 # dataset-keypoint  2 4 5 0 3 
