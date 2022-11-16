@@ -140,8 +140,7 @@ def get_parser():
     parser.add_argument('--cleaned', type=bool, default=False, help='use nesterov or not')
     parser.add_argument('--user', type=str, default="cristian", help='user of the experiment')
     parser.add_argument('--model_version', type=int, default=1, help='model version of architecture')
-    
-    
+    parser.add_argument("--patience", type=int, default=300, help="patience for early stopping")
 
     return parser
 def count_parameters(model):
@@ -187,7 +186,9 @@ class Processor():
         self.maxTestAcc = 0
         self.relative_maxtop5 = 0
 
-
+        self.current_acc_train = 0
+        self.current_acc_val   = 0
+        self.last_acc_val = 0
     def connectingPoints(self,arg):
         print('Creating points .. ')
 
@@ -302,6 +303,7 @@ class Processor():
                  }
             }        
 
+
         
         self.factor_trainable_m_params =  self.trainable_m_params/total_informacion_analizada[str(self.arg.keypoints_number)][str(self.arg.database)]
 
@@ -396,10 +398,10 @@ class Processor():
         else:
             raise ValueError()
 
-        self.lr_scheduler = ReduceLROnPlateau(self.optimizer, mode='min', factor=0.1,
-                                              patience=10, verbose=True,
-                                              threshold=1e-4, threshold_mode='rel',
-                                              cooldown=0)
+        #self.lr_scheduler = ReduceLROnPlateau(self.optimizer, mode='min', factor=0.1,
+        #                                      patience=10, verbose=True,
+        #                                      threshold=1e-4, threshold_mode='rel',
+        #                                      cooldown=0)
 
 
     def save_arg(self):
@@ -635,6 +637,9 @@ class Processor():
         target_arr = np.concatenate(target_arr)
         proba_arr = np.concatenate(proba_arr)
         accuracy  = torch.mean((predict_label == label.data).float())
+        
+        self.current_acc_train = accuracy
+
         if accuracy >= self.best_tmp_acc:
             self.best_tmp_acc = accuracy
 
@@ -771,6 +776,8 @@ class Processor():
 
 
 
+                self.current_acc_val = accuracy
+                
                 if accuracy > self.best_acc:
                     self.best_acc = accuracy
 
@@ -899,6 +906,7 @@ class Processor():
 
                 print('Eval Accuracy: ', accuracy,
                     ' model: ', self.arg.model_saved_directory)
+                
                 if wandbFlag:
                     mean_loss = epoch_loss
                     if mean_loss > 10:
@@ -932,6 +940,9 @@ class Processor():
 
 
     def start(self):
+        self.patience = self.arg.patience
+        self.trigger_times = 0
+        
         if self.arg.phase == 'train':
             self.print_log('Parameters:\n{}\n'.format(str(vars(self.arg))))
             self.global_step = self.arg.start_epoch * \
@@ -954,8 +965,21 @@ class Processor():
                     save_score=self.arg.save_score,
                     loader_name=['test'])
 
+                if self.current_acc_val >= self.maxTestAcc:
+                    self.trigger_times = 0
+                    
+                else:
+                    self.trigger_times+=1
+                    
                 # self.lr_scheduler.step(val_loss)
-
+                
+                self.last_acc_val = self.current_acc_val
+                
+                if self.trigger_times>self.patience:
+                    print("*"*50)
+                    print("Early stopping!\nValidation accuracy not improve from :"+str(self.maxTestAcc)+" in "+str(self.patience)+" epochs")
+                    print("*"*50)
+                    break
             print('best accuracy: ', self.best_acc,
                   ' model_name: ', self.arg.model_saved_directory)
 
