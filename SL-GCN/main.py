@@ -904,19 +904,26 @@ class Processor():
                         title="VAL_conf_mat")})
                     '''
 
-                print('Eval Accuracy: ', accuracy,
-                    ' model: ', self.arg.model_saved_directory)
+                print('Eval Accuracy: ', accuracy,'model: ', self.arg.model_saved_directory)
+                
+                if self.current_acc_val > self.maxTestAcc:
+                    self.trigger_times = 0
+                    
+                else:
+                    self.trigger_times+=1
+                self.last_acc_val = self.current_acc_val
+
+                self.maxTestAcc = max(accuracy,self.maxTestAcc)
+
+                if self.maxTestAcc == accuracy:
+
+                    self.relative_maxtop5 = top5
+                
                 
                 if wandbFlag:
                     mean_loss = epoch_loss
                     if mean_loss > 10:
                         mean_loss = 10
-
-                    self.maxTestAcc = max(accuracy,self.maxTestAcc)
-
-                    if self.maxTestAcc == accuracy:
-
-                        self.relative_maxtop5 = top5
 
                     wandbF.wandbValLog(mean_loss, accuracy, top5,self.maxTestAcc,self.relative_maxtop5)
 
@@ -965,15 +972,10 @@ class Processor():
                     save_score=self.arg.save_score,
                     loader_name=['test'])
 
-                if self.current_acc_val >= self.maxTestAcc:
-                    self.trigger_times = 0
-                    
-                else:
-                    self.trigger_times+=1
-                    
+
+
                 # self.lr_scheduler.step(val_loss)
                 
-                self.last_acc_val = self.current_acc_val
                 
                 if self.trigger_times>self.patience:
                     print("*"*50)
