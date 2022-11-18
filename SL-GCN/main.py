@@ -140,7 +140,7 @@ def get_parser():
     parser.add_argument('--cleaned', type=bool, default=False, help='use nesterov or not')
     parser.add_argument('--user', type=str, default="cristian", help='user of the experiment')
     parser.add_argument('--model_version', type=int, default=1, help='model version of architecture')
-    parser.add_argument("--patience", type=int, default=800, help="patience for early stopping")
+    parser.add_argument("--patience", type=int, default=1000, help="patience for early stopping")
 
     return parser
 def count_parameters(model):
@@ -982,8 +982,8 @@ class Processor():
                     print("Early stopping!\nValidation accuracy not improve from :"+str(self.maxTestAcc)+" in "+str(self.patience)+" epochs")
                     print("*"*50)
                     break
-            print('best accuracy: ', self.best_acc,
-                  ' model_name: ', self.arg.model_saved_directory)
+            print('best accuracy: ', self.best_acc,' model_name: ', self.arg.model_saved_directory)
+            print("patience : "+str(self.patience)+" epochs")
 
         elif self.arg.phase == 'test':
             if not self.arg.test_feeder_args['debug']:
@@ -1105,6 +1105,7 @@ if __name__ == '__main__':
                 "seed":arg.seed,
                 "id_iteration":id_iteration,
                 "model_version":arg.model_version,
+                "patience":arg.patience,
         }
         import wandb
         import os
