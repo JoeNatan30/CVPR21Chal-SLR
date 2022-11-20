@@ -31,7 +31,7 @@ declare -a points=(71 71 71 71 71 71 71 71)
 declare -a datasets=("AEC" "AEC" "AEC" "AEC" "AEC" "AEC" "AEC" "AEC")
 declare -a lrs=(0.05 0.005 0.0005 0.00005 0.05 0.005 0.0005 0.00005)
 declare -a epochs=(6000 10000 20000 40000 6000 10000 20000 40000)
-declare -a model_version=(20 20 20 20 24 24 24 24)
+declare -a model_version=(6 6 6 6 24 24 24 24)
 declare -a patience=(500 800 1000 2000 500 800 1000 2000)
 # run prediction
 
