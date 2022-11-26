@@ -62,13 +62,35 @@ do
       python main.py --seed $i --model_version ${model_version[j]} --experiment_name "results/${points[j]}/${datasets[j]}/openpose-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model openpose --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch ${epochs[j]}  --mode_train "optimizacion_individual" --patience ${patience[j]} --weights "save_models/results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i/wholepose-${datasets[j]}-${points[j]}-$i-init.pt"
   done
 done 
-'''
+
 ####### PUCP 71 ####### 
 declare -a points=(71 71 71 71 71 71 71 71)
 declare -a datasets=("PUCP" "PUCP" "PUCP" "PUCP" "PUCP" "PUCP" "PUCP" "PUCP")
 declare -a lrs=(0.05 0.005 0.0005 0.00005 0.05 0.005 0.0005 0.00005)
 declare -a epochs=(10000 10000 30000 50000 10000 10000 30000 50000)
-declare -a model_version=(19 19 19 19 22 22 22 22)
+declare -a model_version=(9 9 9 9 22 22 22 22)
+declare -a patience=(1000 1000 2000 3000 1000 1000 2000 3000)
+# run prediction
+#    for k in #7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 # dataset-keypoint 
+
+for i in 0 # seed
+do
+  for j in 0 1 2 3 # dataset-keypoint 
+  do 
+      python main.py --seed $i --model_version ${model_version[j]} --experiment_name "results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model wholepose --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch ${epochs[j]}  --mode_train "optimizacion_individual" --patience ${patience[j]}
+      python main.py --seed $i --model_version ${model_version[j]} --experiment_name "results/${points[j]}/${datasets[j]}/mediapipe-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model mediapipe --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch ${epochs[j]}  --mode_train "optimizacion_individual" --patience ${patience[j]} --weights "save_models/results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i/wholepose-${datasets[j]}-${points[j]}-$i-init.pt"
+      python main.py --seed $i --model_version ${model_version[j]} --experiment_name "results/${points[j]}/${datasets[j]}/openpose-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model openpose --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch ${epochs[j]}  --mode_train "optimizacion_individual" --patience ${patience[j]} --weights "save_models/results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i/wholepose-${datasets[j]}-${points[j]}-$i-init.pt"
+  done
+done 
+
+'''
+
+####### WLASL 29 ####### 
+declare -a points=(29 29 29 29 29 29 29 29 29)
+declare -a datasets=("WLASL" "WLASL" "WLASL" "WLASL" "WLASL" "WLASL" "WLASL" "WLASL")
+declare -a lrs=(0.05 0.005 0.0005 0.00005 0.05 0.005 0.0005 0.00005)
+declare -a epochs=(10000 10000 30000 50000 10000 10000 30000 50000)
+declare -a model_version=(10 10 10 10 14 14 14 14)
 declare -a patience=(1000 1000 2000 3000 1000 1000 2000 3000)
 # run prediction
 #    for k in #7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 # dataset-keypoint 
