@@ -90,7 +90,7 @@ declare -a points=(29 29 29 29 29 29 29 29 29)
 declare -a datasets=("WLASL" "WLASL" "WLASL" "WLASL" "WLASL" "WLASL" "WLASL" "WLASL")
 declare -a lrs=(0.05 0.005 0.0005 0.00005 0.05 0.005 0.0005 0.00005)
 declare -a epochs=(10000 10000 30000 60000 10000 10000 30000 60000)
-declare -a model_version=(10 10 10 10 14 14 14 14)
+declare -a model_version=(10 10 10 10 1 1 1 1)
 declare -a patience=(1000 2000 5000 9000 1000 2000 5000 9000)
 # run prediction
 #    for k in #7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 # dataset-keypoint 
