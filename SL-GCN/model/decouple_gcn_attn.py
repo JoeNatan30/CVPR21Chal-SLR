@@ -271,8 +271,93 @@ class Model(nn.Module):
         if self.model_version == 6: # experimento anterior lo llamabamos model v4 
             self.l1 = TCN_GCN_unit(in_channels, 16, A, groups, num_point,block_size, residual=False)
             self.fc = nn.Linear(16, num_class)
+
+
+        if self.model_version == 7:
+            self.l1 = TCN_GCN_unit(in_channels, 16, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(16, 64, A, groups,num_point, block_size, stride=2)
+            self.fc = nn.Linear(64, num_class)
+
+        if self.model_version == 8:
+            self.l1 = TCN_GCN_unit(in_channels, 16, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(16, 128, A, groups,num_point, block_size, stride=2)
+            self.fc = nn.Linear(128, num_class)
         
+        if self.model_version == 9:
+            self.l1 = TCN_GCN_unit(in_channels, 16, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(16, 16, A, groups,num_point, block_size, stride=2)
+            self.fc = nn.Linear(16, num_class)
+
+        if self.model_version == 10:
+            self.l1 = TCN_GCN_unit(in_channels, 128, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(128, num_class)
+
+        if self.model_version == 11:
+            self.l1 = TCN_GCN_unit(in_channels, 256, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(256, num_class)
+
+        if self.model_version == 12:
+            self.l1 = TCN_GCN_unit(in_channels, 512, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(512, num_class)
+            
+        if self.model_version == 13:
+            self.l1 = TCN_GCN_unit(in_channels, 128, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(128, 128, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(128, num_class)
         
+        if self.model_version == 14:
+            self.l1 = TCN_GCN_unit(in_channels, 128, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(128, 64, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(64, num_class)
+
+        if self.model_version == 15:
+            self.l1 = TCN_GCN_unit(in_channels, 128, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(128, 32, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(32, num_class)
+
+        if self.model_version == 16:
+            self.l1 = TCN_GCN_unit(in_channels, 64, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(64, 64, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(64, num_class)
+
+
+        if self.model_version == 17:
+            self.l1 = TCN_GCN_unit(in_channels, 64, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(64, num_class)
+            
+        if self.model_version == 18:
+            self.l1 = TCN_GCN_unit(in_channels, 64, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(64, 64, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(64, num_class)
+            
+        if self.model_version == 19:
+            self.l1 = TCN_GCN_unit(in_channels, 32, A, groups, num_point,block_size, residual=False)
+            self.l2 = TCN_GCN_unit(32, 32, A, groups, num_point,block_size, residual=False)
+            self.fc = nn.Linear(32, num_class)
+            
+        if self.model_version == 20:
+            self.l1 = TCN_GCN_unit(in_channels, 64, A, groups, num_point,block_size, residual=False)
+            self.fc1 = nn.Linear(64, 32)
+            self.fc = nn.Linear(32, num_class)
+
+        if self.model_version == 21:
+            self.l1 = TCN_GCN_unit(in_channels, 64, A, groups, num_point,block_size, residual=False)
+            self.fc1 = nn.Linear(64, 64)
+            self.fc = nn.Linear(64, num_class)
+
+        if self.model_version == 22:
+            self.l1 = TCN_GCN_unit(in_channels, 64, A, groups, num_point,block_size, residual=False)
+            self.fc1 = nn.Linear(64, 256)
+            self.fc = nn.Linear(256, num_class)
+        if self.model_version == 23:
+            self.l1 = TCN_GCN_unit(in_channels, 64, A, groups, num_point,block_size, residual=False)
+            self.fc1 = nn.Linear(64, 512)
+            self.fc = nn.Linear(512, num_class)
+        if self.model_version == 24:
+            self.l1 = TCN_GCN_unit(in_channels, 64, A, groups, num_point,block_size, residual=False)
+            self.fc1 = nn.Linear(64, 1024)
+            self.fc = nn.Linear(1024, num_class)
+
         nn.init.normal(self.fc.weight, 0, math.sqrt(2. / num_class))
         bn_init(self.data_bn, 1)
 
@@ -304,11 +389,64 @@ class Model(nn.Module):
             x = self.l1(x, 1.0)            
         if self.model_version == 6:
             x = self.l1(x, 1.0)
+        if self.model_version == 7:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)
+        if self.model_version == 8:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)
+        if self.model_version == 9:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)
 
+        if self.model_version == 10:
+            x = self.l1(x, 1.0)
+        if self.model_version == 11:
+            x = self.l1(x, 1.0)
+        if self.model_version == 12:
+            x = self.l1(x, 1.0)
+        if self.model_version == 13:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)            
+        if self.model_version == 14:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)            
+        if self.model_version == 15:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)
+        if self.model_version == 16:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)
+        if self.model_version == 17:
+            x = self.l1(x, 1.0)            
+        if self.model_version == 18:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)
+        if self.model_version == 19:
+            x = self.l1(x, 1.0)
+            x = self.l2(x, keep_prob)
+            
+        if self.model_version == 20:
+            x = self.l1(x, 1.0)
+        if self.model_version == 21:
+            x = self.l1(x, 1.0)
+        if self.model_version == 22:
+            x = self.l1(x, 1.0)
+        if self.model_version == 23:
+            x = self.l1(x, 1.0)
+        if self.model_version == 24:
+            x = self.l1(x, 1.0)
+            
+            
         # N*M,C,T,V
         c_new = x.size(1)
         x = x.reshape(N, M, c_new, -1)
         x = x.mean(3).mean(1)
+        
+        if self.model_version in [20,21,22,23,24]:
+            x = self.fc1(x)
+            return self.fc(x)
 
-        return self.fc(x)
+        else:
+            return self.fc(x)
     
