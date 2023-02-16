@@ -83,7 +83,7 @@ def gendata(data_path,  out_path, model_key_getter, part='train', config=1):
 
         skel = np.array(skel)
         skel = np.moveaxis(skel,1,2)
-        skel = skel # *256
+        skel = skel * 256
         
         if skel.shape[0] < max_frame:
             L = skel.shape[0]

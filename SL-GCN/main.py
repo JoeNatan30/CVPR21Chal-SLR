@@ -29,7 +29,7 @@ import time
 # Import datetime class from datetime module
 from datetime import datetime
 
-from data_gen.getConnectingPoint import *
+from data_gen.getConnectingPoint import gendata
 
 wandbFlag = True
 now = str(datetime.now())
@@ -1055,15 +1055,15 @@ if __name__ == '__main__':
 
         if wandbFlag:
             if arg.cleaned:
-                wandb.init(project="three-datasets-psl", 
+                wandb.init(project="SL-GCN-as-original", 
                         entity="JoeNatan30",
-                        tags=["cleaned_data","dist_dur_ban","model_mod"],
+                        tags=[],
                         reinit=True,
                         config=config)
             else:
-                wandb.init(project="three-datasets-psl", 
+                wandb.init(project="SL-GCN-as-original", 
                     entity="JoeNatan30",
-                    tags=["complete_data","dist_dur_ban","model_mod"],
+                    tags=[],
                     reinit=True,
                     config=config)
 
