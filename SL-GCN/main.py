@@ -29,7 +29,7 @@ import time
 # Import datetime class from datetime module
 from datetime import datetime
 
-from data_gen.getConnectingPoint import gendata
+from data_gen.getConnectingPoint import *
 
 wandbFlag = True
 now = str(datetime.now())
@@ -47,8 +47,8 @@ now = now.replace(':','-').replace(" ","_").split('.')[0]
 #         loss = confidence * nll_loss + smoothing * smooth_loss
 #         return loss.mean()
 
-
 model_name = ''
+
 def create_one_folder(directory):
     if not os.path.exists(directory):
         os.makedirs(directory)
@@ -99,7 +99,7 @@ def get_parser():
 
     # feeder
     parser.add_argument('--feeder', default='feeder.feeder', help='data loader will be used')
-    parser.add_argument('--num-worker',type=int,default=32,help='the number of worker for data loader')
+    parser.add_argument('--num-worker',type=int,default=4,help='the number of worker for data loader')
     parser.add_argument('--train-feeder-args',default=dict(),help='the arguments of data loader for training')
     parser.add_argument('--test-feeder-args',default=dict(),help='the arguments of data loader for test')
 
@@ -749,7 +749,7 @@ class Processor():
                     score_dict = dict(
                         zip(self.data_loader[ln].dataset.sample_name, score))
 
-                    conf_mat = torchmetrics.ConfusionMatrix(num_classes=self.arg.model_args["num_class"])
+                    conf_mat = torchmetrics.ConfusionMatrix(num_classes=self.arg.model_args["num_class"], task="multiclass")
                     '''
                     print('self.arg.model_args["num_class"]',self.arg.model_args["num_class"])
                     
@@ -990,31 +990,25 @@ if __name__ == '__main__':
             
         # load arg form config file
         arg = parser.parse_args()
-        print(arg.cleaned)
-        if arg.cleaned:
-            print("cleaned", "="*10)
-            arg.training_set_path = '../../ConnectingPoints/split/cleaned/'+arg.database+'--'+arg.keypoints_model+'-Train.hdf5'
-            arg.testing_set_path  = '../../ConnectingPoints/split/cleaned/'+arg.database+'--'+arg.keypoints_model+'-Val.hdf5'
-        else:
-            print("complete", "$"*10)
-            arg.training_set_path = '../../ConnectingPoints/split/'+arg.database+'--'+arg.keypoints_model+'-Train.hdf5'
-            arg.testing_set_path  = '../../ConnectingPoints/split/'+arg.database+'--'+arg.keypoints_model+'-Val.hdf5'
+
+        arg.training_set_path = '../../ConnectingPoints/reducedData/split_reduced/'+arg.database+'--'+arg.keypoints_model+'-Train.hdf5'
+        arg.testing_set_path  = '../../ConnectingPoints/reducedData/split_reduced/'+arg.database+'--'+arg.keypoints_model+'-Val.hdf5'
 
 
         # DATABASE ARG
-        if arg.database == 'AEC':
-            arg.num_class  = 28 
+        if arg.database == 'AEC' or arg.database == 'AEC_reduced':
+            arg.num_class  = 31
 
         if arg.database == 'WLASL':
             arg.num_class  = 86 
                 
-        if arg.database == 'PUCP':
-            arg.num_class  = 29 
-            arg.training_set_path = '../../../PUCP_PSL_DGI156--'+arg.keypoints_model+'-Train.hdf5'
-            arg.testing_set_path  = '../../../PUCP_PSL_DGI156--'+arg.keypoints_model+'-Val.hdf5'
+        if arg.database == 'PUCP' or arg.database == 'PUCP_reduced':
+            arg.num_class  = 133 
+            #arg.training_set_path = '../../../PUCP_PSL_DGI156--'+arg.keypoints_model+'-Train.hdf5'
+            #arg.testing_set_path  = '../../../PUCP_PSL_DGI156--'+arg.keypoints_model+'-Val.hdf5'
 
         if arg.database == 'AEC-DGI156-DGI305':
-            arg.num_class  = 70
+            arg.num_class  = 85
 
         arg.model_args['num_class'] =arg.num_class
         arg.model_args['num_point'] =arg.keypoints_number
@@ -1051,7 +1045,7 @@ if __name__ == '__main__':
         import wandb
         import os
 
-        os.environ["WANDB_API_KEY"] = "9c7a2412b1f242359f1a4915b620f578b32e96ac"
+        #os.environ["WANDB_API_KEY"] = "9c7a2412b1f242359f1a4915b620f578b32e96ac"
 
         if wandbFlag:
             if arg.cleaned:
@@ -1063,7 +1057,7 @@ if __name__ == '__main__':
             else:
                 wandb.init(project="SL-GCN-as-original", 
                     entity="JoeNatan30",
-                    tags=[],
+                    tags=["54 points"],
                     reinit=True,
                     config=config)
 
@@ -1097,7 +1091,6 @@ if __name__ == '__main__':
         # {arg.model_saved_directory}-{arg.kp_model}-{arg.database}-Lr{str(arg.base_lr)}-NClasses{str(arg.num_class)}-{str(config['num_points'])}
         #os.makedirs(arg.file_name,exist_ok=True)
 
-
         runAndModelName =  arg.kp_model + '-' + arg.database +'-'+str(arg.keypoints_number)+ "-Lr" + str(arg.base_lr)+ "-NClas" + str(arg.num_class) + "-Batch" + str(arg.batch_size)+"-Seed"+str(arg.seed)+"-id"+str(id_iteration)
 
         model_name = runAndModelName
@@ -1105,7 +1098,6 @@ if __name__ == '__main__':
         if wandbFlag:
             wandb.run.name = runAndModelName + "-" + now
             wandb.run.save()
-
 
         print("*"*30)
         print("*"*30)

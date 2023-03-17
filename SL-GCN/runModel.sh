@@ -4,17 +4,17 @@
   #num_class: 28 # AEC=28, PUCP=29 , WLASL=86
   #num_point: 29 # 29 or 71
 
-declare -a points=(29 71 29 71 29 71)
-declare -a lrs=(0.05 0.1 0.05 0.1 0.1 0.05)
-declare -a datasets=("AEC" "AEC" "PUCP" "PUCP" "WLASL" "WLASL")
+declare -a points=(29 71)
+declare -a lrs=(0.05)
+declare -a datasets=("AEC-DGI156-DGI305")
 
 for i in 1
 do
-  for j in 0 1 2 3 4 5
+  for j in 0 
   do 
-      python main.py --seed $i --experiment_name "results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model wholepose --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch 1  --mode_train numero_parametros
-      python main.py --seed $i --experiment_name "results/${points[j]}/${datasets[j]}/mediapipe-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model mediapipe --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch 1  --mode_train numero_parametros --weights "save_models/results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i/wholepose-${datasets[j]}-${points[j]}-$i-init.pt"
-      python main.py --seed $i --experiment_name "results/${points[j]}/${datasets[j]}/openpose-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model openpose --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch 1  --mode_train numero_parametros --weights "save_models/results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i/wholepose-${datasets[j]}-${points[j]}-$i-init.pt"
+      #python main.py --seed $i --experiment_name "results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model wholepose --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch 1  --mode_train numero_parametros
+      python main.py --seed 1 --experiment_name "results/${points[j]}/${datasets[j]}/mediapipe-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model mediapipe --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch 1  --mode_train numero_parametros --weights "save_models/results/${points[j]}/${datasets[j]}/mediapipe-${datasets[j]}-s-$i/mediapipe-${datasets[j]}-${points[j]}-$i-init.pt"
+      #python main.py --seed $i --experiment_name "results/${points[j]}/${datasets[j]}/openpose-${datasets[j]}-s-$i" --database ${datasets[j]} --keypoints_model openpose --base_lr ${lrs[j]} --keypoints_number ${points[j]} --num_epoch 1  --mode_train numero_parametros --weights "save_models/results/${points[j]}/${datasets[j]}/wholepose-${datasets[j]}-s-$i/wholepose-${datasets[j]}-${points[j]}-$i-init.pt"
   done
 done
 
@@ -30,3 +30,5 @@ do
   done
 done
 """
+
+MULTI_GPU=1 nohup python main.py --device 4 --seed 1 --experiment_name "results/54/AEC/mediapipe-AEC-1" --database AEC_reduced --keypoints_model mediapipe --base_lr 0.05 --keypoints_number 71 --num_epoch 3000  --mode_train numero_parametr --num_class 32 > AEC_reduced-32c-71kp.txt &
